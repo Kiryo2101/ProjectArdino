@@ -116,8 +116,7 @@ void loop() {
     }
   }
 
-  else {  //DualShock Controller
-
+  else {                                //DualShock Controller
     ps2x.read_gamepad(false, vibrate);  //read controller and set large motor to spin at 'vibrate' speed
 
     if (ps2x.Button(PSB_START))  //will be TRUE as long as button is pressed
@@ -126,24 +125,59 @@ void loop() {
       Serial.println("Select is being held");
 
 
-    if (ps2x.Button(PSB_PAD_UP)) {  //will be TRUE as long as button is pressed
+    // if (ps2x.Button(PSB_PAD_UP)) {  //will be TRUE as long as button is pressed
+    //   forward();
+    // }
+    if (ps2x.Analog(PSS_LY) >= 0 && ps2x.Analog(PSS_LY) < 127) {
       forward();
-    }
-    if (ps2x.Button(PSB_PAD_RIGHT)) {
-      turnright();
-    }
-    if (ps2x.Button(PSB_PAD_LEFT)) {
-      turnleft();
-    }
-    if (ps2x.Button(PSB_PAD_DOWN)) {
+      // Serial.println(ps2x.Analog(PSS_LY));
+    } else if (ps2x.Analog(PSS_LY) > 127 && ps2x.Analog(PSS_LY) <= 255) {
       backward();
+      // Serial.println(ps2x.Analog(PSS_LY));
+    } else {
+      if (ps2x.Analog(PSS_LX) > 128) {
+        turnright();
+      } else if (ps2x.Analog(PSS_LX) < 128) {
+        turnleft();
+      } else if (ps2x.Analog(PSS_RX) > 128) {
+        slideright();
+      } else if (ps2x.Analog(PSS_RX) < 128) {
+        slideleft();
+      } else {
+        stop();
+      }
+      // Serial.println(ps2x.Analog(PSS_LY));
     }
+    // } else {
+    //   Serial.println("Stop");
+    //   Serial.println(PSS_LY);
+    // }
+    // if ((ps2x.Analog(PSS_LY) >= 0)) {
+    //   turnright();
+    // }
+    // Serial.print("Stick Values:");
+    // Serial.print(ps2x.Analog(PSS_LY), DEC);  //Left stick, Y axis. Other options: LX, RY, RX
+    // Serial.print(",");
+    // Serial.print(ps2x.Analog(PSS_LX), DEC);
+    // Serial.print(",");
+    // Serial.print(ps2x.Analog(PSS_RY), DEC);
+    // Serial.print(",");
+    // Serial.println(ps2x.Analog(PSS_RX), DEC);
+    // if (ps2x.Button(PSB_PAD_RIGHT)) {
+    //   turnright();
+    // }
+    // if (ps2x.Button(PSB_PAD_LEFT)) {
+    //   turnleft();
+    // }
+    // if (ps2x.Button(PSB_PAD_DOWN)) {
+    //   backward();
+    // }
 
-    if (ps2x.Button(PSB_RED))
-      sideright();
+    // if (ps2x.Button(PSB_RED))
+    //   slideright();
 
-    if (ps2x.Button(PSB_PINK))
-      sideleft();
+    // if (ps2x.Button(PSB_PINK))
+    //   slideleft();
 
 
     vibrate = ps2x.Analog(PSAB_BLUE);  //this will set the large motor vibrate speed based on
@@ -168,10 +202,10 @@ void loop() {
 
 
     // if (ps2x.ButtonPressed(PSB_RED))  //will be TRUE if button was JUST pressed
-    //   sideright();
+    //   slideright();
 
     // if (ps2x.ButtonReleased(PSB_PINK))  //will be TRUE if button was JUST released
-    //   sideleft();
+    //   slideleft();
 
     if (ps2x.NewButtonState(PSB_BLUE))  //will be TRUE if button was JUST pressed OR released
       Serial.println("X just changed");
@@ -220,7 +254,7 @@ void loop() {
 }
 
 void forward() {
-  Serial.println("Forward");
+  Serial.println("Forward !");
   digitalWrite(MRFA, HIGH);
   digitalWrite(MRFB, LOW);
 
@@ -235,7 +269,7 @@ void forward() {
 }
 
 void backward() {
-  Serial.println("Backward");
+  Serial.println("Backward !");
   digitalWrite(MRFA, LOW);
   digitalWrite(MRFB, HIGH);
 
@@ -279,8 +313,8 @@ void turnright() {
   digitalWrite(MLBB, LOW);
 }
 
-void sideright() {
-  Serial.println("Side Right");
+void slideright() {
+  Serial.println("Slide Right");
   digitalWrite(MRFA, LOW);
   digitalWrite(MRFB, HIGH);
 
@@ -294,8 +328,8 @@ void sideright() {
   digitalWrite(MLBB, HIGH);
 }
 
-void sideleft() {
-  Serial.println("Side Left");
+void slideleft() {
+  Serial.println("Slide Left");
   digitalWrite(MRFA, HIGH);
   digitalWrite(MRFB, LOW);
 
@@ -306,5 +340,20 @@ void sideleft() {
   digitalWrite(MLFB, HIGH);
 
   digitalWrite(MLBA, HIGH);
+  digitalWrite(MLBB, LOW);
+}
+
+void stop() {
+  Serial.println("Stop !");
+  digitalWrite(MRFA, LOW);
+  digitalWrite(MRFB, LOW);
+
+  digitalWrite(MRBA, LOW);
+  digitalWrite(MRBB, LOW);
+
+  digitalWrite(MLFA, LOW);
+  digitalWrite(MLFB, LOW);
+
+  digitalWrite(MLBA, LOW);
   digitalWrite(MLBB, LOW);
 }
