@@ -10,9 +10,12 @@ const int MRFB = 4;
 const int MRBA = 3;
 const int MRBB = 2;
 const int MLFA = 6;
-const int MLFB = 7;
-const int MLBA = 8;
-const int MLBB = 9;
+// const int MLFB = 7;
+// const int MLBA = 8;
+// const int MLBB = 9;
+#define MLFB A0
+#define MLBA A1
+#define MLBB A2
 int error = 0;
 byte type = 0;
 byte vibrate = 0;
