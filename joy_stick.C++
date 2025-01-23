@@ -2,20 +2,18 @@
 
 PS2X ps2x;  // create PS2 Controller Class
 
-//right now, the library does NOT support hot pluggable controllers, meaning
-//you must always either restart your Arduino after you conect the controller,
-//or call config_gamepad(pins) again after connecting the controller.
 const int MRFA = 5;
 const int MRFB = 4;
 const int MRBA = 3;
 const int MRBB = 2;
-const int MLFA = 6;
+// const int MLFA = 6;
 // const int MLFB = 7;
 // const int MLBA = 8;
 // const int MLBB = 9;
-#define MLFB A0
-#define MLBA A1
-#define MLBB A2
+#define MLFA A0
+#define MLFB A1
+#define MLBA A2
+#define MLBB A3
 int error = 0;
 byte type = 0;
 byte vibrate = 0;
@@ -68,16 +66,6 @@ void setup() {
 }
 
 void loop() {
-  /* You must Read Gamepad to get new values
-   Read GamePad and set vibration values
-   ps2x.read_gamepad(small motor on/off, larger motor strenght from 0-255)
-   if you don't enable the rumble, use ps2x.read_gamepad(); with no values
-   
-   you should call this at least once a second
-   */
-
-
-
   if (error == 1)  //skip loop if no controller found
     return;
 
@@ -133,10 +121,8 @@ void loop() {
     // }
     if (ps2x.Analog(PSS_LY) >= 0 && ps2x.Analog(PSS_LY) < 127) {
       forward();
-      // Serial.println(ps2x.Analog(PSS_LY));
     } else if (ps2x.Analog(PSS_LY) > 127 && ps2x.Analog(PSS_LY) <= 255) {
       backward();
-      // Serial.println(ps2x.Analog(PSS_LY));
     } else {
       if (ps2x.Analog(PSS_LX) > 128) {
         turnright();
@@ -149,48 +135,12 @@ void loop() {
       } else {
         stop();
       }
-      // Serial.println(ps2x.Analog(PSS_LY));
     }
-    // } else {
-    //   Serial.println("Stop");
-    //   Serial.println(PSS_LY);
-    // }
-    // if ((ps2x.Analog(PSS_LY) >= 0)) {
-    //   turnright();
-    // }
-    // Serial.print("Stick Values:");
-    // Serial.print(ps2x.Analog(PSS_LY), DEC);  //Left stick, Y axis. Other options: LX, RY, RX
-    // Serial.print(",");
-    // Serial.print(ps2x.Analog(PSS_LX), DEC);
-    // Serial.print(",");
-    // Serial.print(ps2x.Analog(PSS_RY), DEC);
-    // Serial.print(",");
-    // Serial.println(ps2x.Analog(PSS_RX), DEC);
-    // if (ps2x.Button(PSB_PAD_RIGHT)) {
-    //   turnright();
-    // }
-    // if (ps2x.Button(PSB_PAD_LEFT)) {
-    //   turnleft();
-    // }
-    // if (ps2x.Button(PSB_PAD_DOWN)) {
-    //   backward();
-    // }
-
-    // if (ps2x.Button(PSB_RED))
-    //   slideright();
-
-    // if (ps2x.Button(PSB_PINK))
-    //   slideleft();
-
 
     vibrate = ps2x.Analog(PSAB_BLUE);  //this will set the large motor vibrate speed based on
                                        //how hard you press the blue (X) button
-
     if (ps2x.NewButtonState())  //will be TRUE if any button changes state (on to off, or off to on)
     {
-
-
-
       if (ps2x.Button(PSB_L3))
         Serial.println("L3 pressed");
       if (ps2x.Button(PSB_R3))
@@ -203,44 +153,12 @@ void loop() {
         Serial.println("Triangle pressed");
     }
 
-
-    // if (ps2x.ButtonPressed(PSB_RED))  //will be TRUE if button was JUST pressed
-    //   slideright();
-
-    // if (ps2x.ButtonReleased(PSB_PINK))  //will be TRUE if button was JUST released
-    //   slideleft();
-
     if (ps2x.NewButtonState(PSB_BLUE))  //will be TRUE if button was JUST pressed OR released
       Serial.println("X just changed");
 
 
     if (ps2x.Button(PSB_L1) || ps2x.Button(PSB_R1))  // print stick values if either is TRUE
     {
-      // if (ps2x.Analog(PSS_LX) == 0) {
-      //   if (ps2x.Analog(PSS_LY) < 151) {
-      //     Serial.println("Foward Left");
-      //     // Serial.println(ps2x.Analog(PSS_LY));
-      //   } else if (ps2x.Analog(PSS_LY) > 150) {
-      //     Serial.println("Back Left");
-      //     // Serial.println(ps2x.Analog(PSS_LY));
-      //   };
-      //   Serial.println(ps2x.Analog(PSS_LX));
-      // } else if (ps2x.Analog(PSS_LX) == 255) {
-      //   if (ps2x.Analog(PSS_LY) < 151) {
-      //     Serial.println("Foward Right");
-      //     // Serial.println(ps2x.Analog(PSS_LY));
-      //   } else if (ps2x.Analog(PSS_LY) > 150) {
-      //     Serial.println("Back Right");
-      //     // Serial.println(ps2x.Analog(PSS_LY));
-      //   };
-      //   Serial.println(ps2x.Analog(PSS_LX));
-      // } else if (ps2x.Analog(PSS_LY) < 151) {
-      //   Serial.println("Foward");
-      //   Serial.println(ps2x.Analog(PSS_LY));
-      // } else if (ps2x.Analog(PSS_LY) > 150) {
-      //   Serial.println("Back");
-      //   Serial.println(ps2x.Analog(PSS_LY));
-      // };
       Serial.print("Stick Values:");
       Serial.print(ps2x.Analog(PSS_LY), DEC);  //Left stick, Y axis. Other options: LX, RY, RX
       Serial.print(",");
